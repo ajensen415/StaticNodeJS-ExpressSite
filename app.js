@@ -1,22 +1,35 @@
-//Variables to require the necessary dependencies 
-const express = require('express');
-const app = express();
 
-const mainRoute = require('./routes');
-//const indexRoute = require('./routes/index');
-const aboutRoute = require('./routes/about');
-const projectRoutes = require('./routes/projects');
+//Variables to require express & data.json
+const express = require('express');
+const { projects } = require('./data.json');
+
+const app = express();
 
 //set view engine to pug
 app.set('view engine', 'pug');
 
-//serve static files to express
 app.use('/static', express.static('public'));
 
-//route render
-app.use(mainRoute);
-app.use('/about', aboutRoute);
-app.use('/projects', projectRoutes);
+//Index route
+app.get('/', (req, res) => {
+  res.render('index', { projects });
+})
+
+//About route
+app.get('/about', (req, res, next) => {
+  res.render('about');
+})
+
+//Individual project pages by ID
+app.get('/project/:id', (req, res, next) => {
+  const projectId = req.params.id;
+  const project = projects[projectId];
+  if (project) {
+    res.render('project', { project });
+  } else {
+    next();
+  }
+});
 
 //404 error handler
 app.use( (req, res, next) => {
@@ -26,7 +39,7 @@ app.use( (req, res, next) => {
     next(err);
 });
 
-//global error handler
+//Global error handler
 app.use( (err, req, res, next) => {
     res.locals.error = err;
 
@@ -34,7 +47,7 @@ app.use( (err, req, res, next) => {
         res.status(err.status).render("page-not-found", { err });
     } else {
         err.status = err.status || 500;
-        err.message = "Something went wrtong, please try again later.";
+        err.message = "Something went wrong, please try again later.";
         console.log(`Error status ${err.status}: ${err.message}`);
         res.status(err.status).render('error', { err });
     }

@@ -1,0 +1,13 @@
+extends layout
+
+block content 
+
+    section.box
+        br
+        h1= `Error Status Code: ${error.status}`
+        h2= `Oh no! ${error.message} Please try again.` 
+
+    nav.nav
+      a(href='/')
+        span &larr;
+        |  Back To Home
