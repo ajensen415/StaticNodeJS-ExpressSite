@@ -5,6 +5,8 @@ const { projects } = require('./data.json');
 
 const app = express();
 
+let test = "test123";
+
 //set view engine to pug
 app.set('view engine', 'pug');
 
@@ -31,6 +33,13 @@ app.get('/project/:id', (req, res, next) => {
   }
 });
 
+/*// get route for projects
+app.get('/projects/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const project = data.projects.find(project => project.id === id); // use ID to find project
+  res.render('project', {project});
+});*/
+
 //404 error handler
 app.use( (req, res, next) => {
     const err = new Error('Sorry, the page you were looking for does not exist.');
@@ -41,6 +50,7 @@ app.use( (req, res, next) => {
 
 //Global error handler
 app.use( (err, req, res, next) => {
+    console.log(err);
     res.locals.error = err;
 
     if (err.status === 404) {
